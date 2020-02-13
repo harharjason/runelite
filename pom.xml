@@ -171,6 +171,7 @@
 				<configuration>
 					<enableAssertions>true</enableAssertions>
 					<argLine>@{argLine} -Xmx512m</argLine>
+					<!-- @{argLine} necessary for compatibility with JaCoCo -->
 				</configuration>
 			</plugin>
 			<plugin>

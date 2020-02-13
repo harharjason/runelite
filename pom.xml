@@ -261,7 +261,7 @@
 							<version>0.8</version>
 						</dependency>
 					</dependencies>
-				</plugin>
+			</plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>

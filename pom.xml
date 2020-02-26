@@ -28,7 +28,7 @@
 
 	<groupId>net.runelite</groupId>
 	<artifactId>runelite-parent</artifactId>
-	<version>1.6.7-SNAPSHOT</version>
+	<version>1.6.6-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>RuneLite</name>
@@ -42,7 +42,6 @@
 
 		<maven.javadoc.skip>true</maven.javadoc.skip>
 		<checkstyle.skip>true</checkstyle.skip>
-		<glslang.path></glslang.path>
 
 		<rs.version>188</rs.version>
 	</properties>
@@ -84,12 +83,12 @@
 	<repositories>
 		<repository>
 			<id>maven-central</id>
-			<url>https://repo.maven.apache.org/maven2</url>
+			<url>http://repo1.maven.org/maven2</url>
 		</repository>
 		<repository>
 			<id>runelite</id>
 			<name>RuneLite</name>
-			<url>https://repo.runelite.net</url>
+			<url>http://repo.runelite.net</url>
 			<snapshots>
 				<enabled>true</enabled>
 				<updatePolicy>always</updatePolicy>
@@ -99,12 +98,12 @@
 	<pluginRepositories>
 		<pluginRepository>
 			<id>maven-central-plugins</id>
-			<url>https://repo.maven.apache.org/maven2</url>
+			<url>http://repo1.maven.org/maven2</url>
 		</pluginRepository>
 		<pluginRepository>
 			<id>runelite-plugins</id>
 			<name>RuneLite Plugins</name>
-			<url>https://repo.runelite.net</url>
+			<url>http://repo.runelite.net</url>
 			<snapshots>
 				<enabled>true</enabled>
 				<updatePolicy>always</updatePolicy>
@@ -173,9 +172,6 @@
 					<enableAssertions>true</enableAssertions>
 					<argLine>${argLine} -Xmx512m</argLine>
 					<!-- remove {argLine} to enable surefire, but remember to disable JaCoCo -->
-					<systemProperties>
-						<glslang.path>${glslang.path}</glslang.path>
-					</systemProperties>
 				</configuration>
 			</plugin>
 			<plugin>

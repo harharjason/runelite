@@ -42,6 +42,7 @@
 
 		<maven.javadoc.skip>true</maven.javadoc.skip>
 		<checkstyle.skip>true</checkstyle.skip>
+		<glslang.path></glslang.path>
 
 		<rs.version>188</rs.version>
 	</properties>
@@ -83,12 +84,12 @@
 	<repositories>
 		<repository>
 			<id>maven-central</id>
-			<url>http://repo1.maven.org/maven2</url>
+			<url>https://repo.maven.apache.org/maven2</url>
 		</repository>
 		<repository>
 			<id>runelite</id>
 			<name>RuneLite</name>
-			<url>http://repo.runelite.net</url>
+			<url>https://repo.runelite.net</url>
 			<snapshots>
 				<enabled>true</enabled>
 				<updatePolicy>always</updatePolicy>
@@ -98,12 +99,12 @@
 	<pluginRepositories>
 		<pluginRepository>
 			<id>maven-central-plugins</id>
-			<url>http://repo1.maven.org/maven2</url>
+			<url>https://repo.maven.apache.org/maven2</url>
 		</pluginRepository>
 		<pluginRepository>
 			<id>runelite-plugins</id>
 			<name>RuneLite Plugins</name>
-			<url>http://repo.runelite.net</url>
+			<url>https://repo.runelite.net</url>
 			<snapshots>
 				<enabled>true</enabled>
 				<updatePolicy>always</updatePolicy>
@@ -168,8 +169,10 @@
 				<version>2.18</version>
 				<configuration>
 					<enableAssertions>true</enableAssertions>
-					<argLine>${argLine} -Xmx512m</argLine>
-					<!-- remove {argLine} to enable surefire, but remember to disable JaCoCo -->
+					<argLine>-Xmx512m</argLine>
+					<systemProperties>
+						<glslang.path>${glslang.path}</glslang.path>
+					</systemProperties>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -236,41 +239,6 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.3</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>prepare-agent</goal>
-						</goals>
-					</execution>
-					<!-- attached to Maven test phase -->
-					<execution>
-						<id>report</id>
-						<phase>test</phase>
-						<goals>
-							<goal>report</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-					<groupId>org.pitest</groupId>
-					<artifactId>pitest-maven</artifactId>
-					<version>1.4.6</version>
-					<configuration>
-						<excludedTestClasses>
-							<param>net.runelite.client*</param>
-							<param>net.runelite.http*</param>
-							<param>net.runelite.cache*</param>
-							<param>net.runelite.protocol*</param>
-							<param>net.runelite.api*</param>
-							<param>net.runelite.script*</param>
-						</excludedTestClasses>
-					</configuration>
 			</plugin>
 		</plugins>
 		<pluginManagement>

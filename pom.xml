@@ -169,7 +169,8 @@
 				<version>2.18</version>
 				<configuration>
 					<enableAssertions>true</enableAssertions>
-					<argLine>-Xmx512m</argLine>
+					<argLine>${argLine} -Xmx512m</argLine>
+					<!-- remove {argLine} to enable surefire, but remember to disable JaCoCo -->
 					<systemProperties>
 						<glslang.path>${glslang.path}</glslang.path>
 					</systemProperties>
@@ -236,6 +237,26 @@
 						<phase>package</phase>
 						<goals>
 							<goal>strip-jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.3</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<!-- attached to Maven test phase -->
+					<execution>
+						<id>report</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
 						</goals>
 					</execution>
 				</executions>

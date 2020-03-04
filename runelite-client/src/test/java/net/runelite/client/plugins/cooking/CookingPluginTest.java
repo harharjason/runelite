@@ -52,7 +52,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class CookingPluginTest
 {
-	private static final String[] COOKING_MESSAGES = {
+	private static final String[] COOKING_MESSAGES_SUCCESS = {
 		"You successfully cook a shark.",
 		"You successfully cook an anglerfish.",
 		"You manage to cook a tuna.",
@@ -60,6 +60,15 @@ public class CookingPluginTest
 		"You roast a lobster.",
 		"You cook a bass.",
 		"You successfully bake a tasty garden pie."
+	};
+
+	private static final String[] COOKING_MESSAGES_FAILURE = {
+		"You accidentally burn a shark.",
+		"You accidentally spoil an anglerfish.",
+		"You accidentally burn a tuna.",
+		"You accidentally burn the karambwan.",
+		"You accidentally spoil a garden pie.",
+		"You accidentally burn a bass.",
 	};
 
 	@Inject
@@ -96,9 +105,9 @@ public class CookingPluginTest
 	}
 
 	@Test
-	public void testOnChatMessage()
+	public void testOnChatMessage_SUCCESS()
 	{
-		for (String message : COOKING_MESSAGES)
+		for (String message : COOKING_MESSAGES_SUCCESS)
 		{
 			ChatMessage chatMessage = new ChatMessage(null, ChatMessageType.SPAM, "", message, "", 0);
 			cookingPlugin.onChatMessage(chatMessage);
@@ -106,7 +115,21 @@ public class CookingPluginTest
 
 		CookingSession cookingSession = cookingPlugin.getSession();
 		assertNotNull(cookingSession);
-		assertEquals(COOKING_MESSAGES.length, cookingSession.getCookAmount());
+		assertEquals(COOKING_MESSAGES_SUCCESS.length, cookingSession.getCookAmount());
+	}
+
+	@Test
+	public void testOnChatMessage_FAILURE()
+	{
+		for (String message : COOKING_MESSAGES_FAILURE)
+		{
+			ChatMessage chatMessage = new ChatMessage(null, ChatMessageType.SPAM, "", message, "", 0);
+			cookingPlugin.onChatMessage(chatMessage);
+		}
+
+		CookingSession cookingSession = cookingPlugin.getSession();
+		assertNotNull(cookingSession);
+		assertEquals(COOKING_MESSAGES_FAILURE.length, cookingSession.getBurnAmount());
 	}
 
 	@Test

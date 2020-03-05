@@ -36,6 +36,7 @@ import net.runelite.api.Item;
 import net.runelite.api.ItemContainer;
 import net.runelite.api.ItemID;
 import net.runelite.api.Varbits;
+import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.ItemContainerChanged;
 import net.runelite.api.events.VarbitChanged;
@@ -43,7 +44,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import static net.runelite.api.ChatMessageType.SPAM;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -52,6 +55,12 @@ import org.mockito.junit.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class MotherlodePluginTest
 {
+	private static final String PAY_DIRT = "You manage to mine some pay-dirt.";
+	private static final String DIAMOND = "You just found a Diamond!";
+	private static final String RUBY = "You just found a Ruby!";
+	private static final String EMERALD = "You just found an Emerald!";
+	private static final String SAPPHIRE = "You just found a Sapphire!";
+
 	@Inject
 	private MotherlodePlugin motherlodePlugin;
 
@@ -153,6 +162,96 @@ public class MotherlodePluginTest
 		verify(motherlodeSession).updateOreFound(ItemID.GOLDEN_NUGGET, 4);
 		verify(motherlodeSession).updateOreFound(ItemID.COAL, 2);
 		verify(motherlodeSession).updateOreFound(ItemID.ADAMANTITE_ORE, 1);
+		verifyNoMoreInteractions(motherlodeSession);
+	}
+
+	@Test
+	public void testChatMessage_PAY_DIRT()
+	{
+		// set inMlm
+		GameStateChanged gameStateChanged = new GameStateChanged();
+		gameStateChanged.setGameState(GameState.LOADING);
+		motherlodePlugin.onGameStateChanged(gameStateChanged);
+
+		// Generate Message
+		ChatMessage chatMessageEvent = new ChatMessage(null, SPAM, "", PAY_DIRT, null, 0);
+
+		// Trigger message
+		motherlodePlugin.onChatMessage(chatMessageEvent);
+
+		verify(motherlodeSession, times(1)).incrementPayDirtMined();
+		verifyNoMoreInteractions(motherlodeSession);
+	}
+
+	@Test
+	public void testChatMessage_DIAMOND()
+	{
+		// set inMlm
+		GameStateChanged gameStateChanged = new GameStateChanged();
+		gameStateChanged.setGameState(GameState.LOADING);
+		motherlodePlugin.onGameStateChanged(gameStateChanged);
+
+		// Generate Message
+		ChatMessage chatMessageEvent = new ChatMessage(null, SPAM, "", DIAMOND, null, 0);
+
+		// Trigger message
+		motherlodePlugin.onChatMessage(chatMessageEvent);
+
+		verify(motherlodeSession, times(1)).incrementGemFound(ItemID.UNCUT_DIAMOND);
+		verifyNoMoreInteractions(motherlodeSession);
+	}
+
+	@Test
+	public void testChatMessage_RUBY()
+	{
+		// set inMlm
+		GameStateChanged gameStateChanged = new GameStateChanged();
+		gameStateChanged.setGameState(GameState.LOADING);
+		motherlodePlugin.onGameStateChanged(gameStateChanged);
+
+		// Generate Message
+		ChatMessage chatMessageEvent = new ChatMessage(null, SPAM, "", RUBY, null, 0);
+
+		// Trigger message
+		motherlodePlugin.onChatMessage(chatMessageEvent);
+
+		verify(motherlodeSession, times(1)).incrementGemFound(ItemID.UNCUT_RUBY);
+		verifyNoMoreInteractions(motherlodeSession);
+	}
+
+	@Test
+	public void testChatMessage_EMERALD()
+	{
+		// set inMlm
+		GameStateChanged gameStateChanged = new GameStateChanged();
+		gameStateChanged.setGameState(GameState.LOADING);
+		motherlodePlugin.onGameStateChanged(gameStateChanged);
+
+		// Generate Message
+		ChatMessage chatMessageEvent = new ChatMessage(null, SPAM, "", EMERALD, null, 0);
+
+		// Trigger message
+		motherlodePlugin.onChatMessage(chatMessageEvent);
+
+		verify(motherlodeSession, times(1)).incrementGemFound(ItemID.UNCUT_EMERALD);
+		verifyNoMoreInteractions(motherlodeSession);
+	}
+
+	@Test
+	public void testChatMessage_SAPPHIRE()
+	{
+		// set inMlm
+		GameStateChanged gameStateChanged = new GameStateChanged();
+		gameStateChanged.setGameState(GameState.LOADING);
+		motherlodePlugin.onGameStateChanged(gameStateChanged);
+
+		// Generate Message
+		ChatMessage chatMessageEvent = new ChatMessage(null, SPAM, "", SAPPHIRE, null, 0);
+
+		// Trigger message
+		motherlodePlugin.onChatMessage(chatMessageEvent);
+
+		verify(motherlodeSession, times(1)).incrementGemFound(ItemID.UNCUT_SAPPHIRE);
 		verifyNoMoreInteractions(motherlodeSession);
 	}
 

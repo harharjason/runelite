@@ -27,6 +27,7 @@ package net.runelite.client.plugins.motherlode;
 import com.google.inject.Guice;
 import com.google.inject.testing.fieldbinder.Bind;
 import com.google.inject.testing.fieldbinder.BoundFieldModule;
+import java.time.Instant;
 import java.util.concurrent.ScheduledExecutorService;
 import javax.inject.Inject;
 import net.runelite.api.Client;
@@ -55,7 +56,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class MotherlodePluginTest
 {
-	private static final String PAY_DIRT = "You manage to mine some pay-dirt.";
+	private static final String PAYDIRT = "You manage to mine some pay-dirt.";
 	private static final String DIAMOND = "You just found a Diamond!";
 	private static final String RUBY = "You just found a Ruby!";
 	private static final String EMERALD = "You just found an Emerald!";
@@ -166,7 +167,7 @@ public class MotherlodePluginTest
 	}
 
 	@Test
-	public void testChatMessage_PAY_DIRT()
+	public void testChatMessage_PAYDIRT()
 	{
 		// set inMlm
 		GameStateChanged gameStateChanged = new GameStateChanged();
@@ -174,7 +175,7 @@ public class MotherlodePluginTest
 		motherlodePlugin.onGameStateChanged(gameStateChanged);
 
 		// Generate Message
-		ChatMessage chatMessageEvent = new ChatMessage(null, SPAM, "", PAY_DIRT, null, 0);
+		ChatMessage chatMessageEvent = new ChatMessage(null, SPAM, "", PAYDIRT, null, 0);
 
 		// Trigger message
 		motherlodePlugin.onChatMessage(chatMessageEvent);
@@ -254,6 +255,77 @@ public class MotherlodePluginTest
 		verify(motherlodeSession, times(1)).incrementGemFound(ItemID.UNCUT_SAPPHIRE);
 		verifyNoMoreInteractions(motherlodeSession);
 	}
+
+	@Test
+    public void testCheckMining_NULLSESSION()
+    {
+        // set inMlm
+        GameStateChanged gameStateChanged = new GameStateChanged();
+        gameStateChanged.setGameState(GameState.LOADING);
+        motherlodePlugin.onGameStateChanged(gameStateChanged);
+
+        // Initial sack count
+        when(client.getVar(Varbits.SACK_NUMBER)).thenReturn(42);
+        motherlodePlugin.onVarbitChanged(new VarbitChanged());
+
+        // Create before inventory
+        ItemContainer inventory = mock(ItemContainer.class);
+        Item[] items = new Item[]{
+                item(ItemID.RUNITE_ORE, 1),
+                item(ItemID.GOLDEN_NUGGET, 4),
+                item(ItemID.COAL, 1),
+                item(ItemID.COAL, 1),
+                item(ItemID.COAL, 1),
+                item(ItemID.COAL, 1),
+
+        };
+        when(inventory.getItems())
+                .thenReturn(items);
+        when(client.getItemContainer(InventoryID.INVENTORY)).thenReturn(inventory);
+
+        // Check if Player is mining (should be NULL)
+        motherlodePlugin.checkMining();
+
+        verify(motherlodeSession, times(1)).getLastPayDirtMined();
+        verifyNoMoreInteractions(motherlodeSession);
+    }
+
+    @Test
+    public void testCheckMining_TRUE()
+    {
+        // set inMlm
+        GameStateChanged gameStateChanged = new GameStateChanged();
+        gameStateChanged.setGameState(GameState.LOADING);
+        motherlodePlugin.onGameStateChanged(gameStateChanged);
+
+        // Initial sack count
+        when(client.getVar(Varbits.SACK_NUMBER)).thenReturn(42);
+        motherlodePlugin.onVarbitChanged(new VarbitChanged());
+
+        // Create before inventory
+        ItemContainer inventory = mock(ItemContainer.class);
+        Item[] items = new Item[]{
+                item(ItemID.RUNITE_ORE, 1),
+                item(ItemID.GOLDEN_NUGGET, 4),
+                item(ItemID.COAL, 1),
+                item(ItemID.COAL, 1),
+                item(ItemID.COAL, 1),
+                item(ItemID.COAL, 1),
+
+        };
+        when(inventory.getItems())
+                .thenReturn(items);
+        when(client.getItemContainer(InventoryID.INVENTORY)).thenReturn(inventory);
+
+        // Need to mock time
+        Instant mockTime = Instant.now();
+        when(motherlodeSession.getLastPayDirtMined()).thenReturn(mockTime);
+
+        // Check if Player is mining
+        motherlodePlugin.checkMining();
+
+        verify(motherlodeSession, times(1)).getLastPayDirtMined();
+    }
 
 	private static Item item(int itemId, int quantity)
 	{

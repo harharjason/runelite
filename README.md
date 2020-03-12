@@ -18,6 +18,10 @@ If you have any questions, please join our IRC channel on [irc.rizon.net #runeli
 Open the project in your IDE as a Maven project, build the root module and then run the RuneLite class in runelite-client.  
 For more information visit the [RuneLite Wiki](https://github.com/runelite/runelite/wiki).
 
+To run this particular project, visiting [this particular link will help get you started](https://github.com/runelite/runelite/wiki/Building-with-IntelliJ-IDEA).
+
+Then to, run the tests type ``` mvn test ``` in the terminal.
+
 ### License
 
 RuneLite is licensed under the BSD 2-clause license. See the license header in the respective file to be sure.
